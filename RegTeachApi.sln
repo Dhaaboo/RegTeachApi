@@ -1,0 +1,25 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.14.37328.6 d17.14
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RegTeachApi", "RegTeachApi\RegTeachApi.csproj", "{3F81B7D9-56CF-4FB0-BE7E-C527FA3496BA}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{3F81B7D9-56CF-4FB0-BE7E-C527FA3496BA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3F81B7D9-56CF-4FB0-BE7E-C527FA3496BA}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3F81B7D9-56CF-4FB0-BE7E-C527FA3496BA}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3F81B7D9-56CF-4FB0-BE7E-C527FA3496BA}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {888C2DAC-DE1E-4504-9C3D-E7A53814E5E6}
+	EndGlobalSection
+EndGlobal

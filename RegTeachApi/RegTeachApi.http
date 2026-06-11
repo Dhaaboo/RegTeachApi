@@ -1,0 +1,6 @@
+@RegTeachApi_HostAddress = http://localhost:5194
+
+GET {{RegTeachApi_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
