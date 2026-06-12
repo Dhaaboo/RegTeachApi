@@ -3,6 +3,8 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using RegTeachApi.Data;
+using RegTeachApi.Data.Models;
+using RegTeachApi.Middleware;
 using RegTeachApi.Services;
 using System.Text;
 
@@ -18,6 +20,49 @@ var Ctr = _blder.Configuration.GetConnectionString("MYRDBCS") ?? throw new Inval
 _Src.AddDbContext<APPDBC>(options => options.UseSqlServer(Ctr));
 _Src.AddEndpointsApiExplorer();
 _Src.AddSwaggerGen();
+_Src.AddSwaggerGen(options =>
+{
+    options.AddSecurityDefinition(
+        "Bearer",
+        new Microsoft.OpenApi.Models
+        .OpenApiSecurityScheme
+        {
+            Name = "Authorization",
+            Type =
+                Microsoft.OpenApi.Models
+                .SecuritySchemeType.Http,
+
+            Scheme = "bearer",
+            BearerFormat = "JWT",
+
+            In =
+                Microsoft.OpenApi.Models
+                .ParameterLocation.Header
+        });
+
+    options.AddSecurityRequirement(
+        new Microsoft.OpenApi.Models
+        .OpenApiSecurityRequirement
+        {
+            {
+                new Microsoft.OpenApi.Models
+                .OpenApiSecurityScheme
+                {
+                    Reference =
+                        new Microsoft.OpenApi.Models
+                        .OpenApiReference
+                        {
+                            Type =
+                                Microsoft.OpenApi.Models
+                                .ReferenceType.SecurityScheme,
+
+                            Id = "Bearer"
+                        }
+                },
+                Array.Empty<string>()
+            }
+        });
+});
 
 _Src.AddScoped<JwtService>();
 
@@ -41,8 +86,58 @@ _Src.AddAuthentication(
     });
 
 _Src.AddAuthorization();
+_Src.AddAuthorization(options =>
+{
+    options.AddPolicy(
+        "AdminOnly",
+        policy =>
+            policy.RequireRole("Admin"));
+
+    options.AddPolicy(
+        "VerifiedUser",
+        policy =>
+            policy.RequireClaim(
+                "EmailVerified",
+                "true"));
+});
+
+_Src.AddCors(options =>
+{
+    options.AddPolicy(
+        "AllowFrontend",
+        policy =>
+        {
+            policy
+                .AllowAnyHeader()
+                .AllowAnyMethod()
+                .AllowAnyOrigin();
+        });
+});
 
 var app = _blder.Build();
+
+using var scope = app.Services.CreateScope();
+
+var _db = scope.ServiceProvider.GetRequiredService<APPDBC>();
+
+if (!_db.RegTeachUsers.Any())
+{
+    _db.RegTeachUsers.Add(new RegTeachUsers
+    {
+        Username = "admin",
+        Email = "admin@admin.com",
+        FirstName = "System",
+        LastName = "Admin",
+        Password = BCrypt.Net.BCrypt.HashPassword("Admin@123"),
+        Role = "Admin",
+        IsEmailVerified = true
+    });
+    _db.SaveChanges();
+}
+
+app.UseMiddleware<SecurityHeadersMiddleware>();
+app.UseCors("AllowFrontend");
+
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
