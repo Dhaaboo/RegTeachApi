@@ -10,7 +10,8 @@ namespace RegTeachApi.Services
     {
         private readonly IConfiguration _configuration;
 
-        public JwtService(IConfiguration configuration)
+        public JwtService(
+            IConfiguration configuration)
         {
             _configuration = configuration;
         }
@@ -37,20 +38,30 @@ namespace RegTeachApi.Services
                     Encoding.UTF8.GetBytes(
                         _configuration["Jwt:Key"]!));
 
-            var creds =
+            var credentials =
                 new SigningCredentials(
                     key,
                     SecurityAlgorithms.HmacSha256);
 
             var token = new JwtSecurityToken(
-                issuer: _configuration["Jwt:Issuer"],
-                audience: _configuration["Jwt:Audience"],
+                issuer:
+                    _configuration["Jwt:Issuer"],
+                audience:
+                    _configuration["Jwt:Audience"],
                 claims: claims,
-                expires: DateTime.UtcNow.AddDays(7),
-                signingCredentials: creds);
+                expires:
+                    DateTime.UtcNow.AddDays(7),
+                signingCredentials:
+                    credentials);
 
             return new JwtSecurityTokenHandler()
                 .WriteToken(token);
+        }
+
+        public string GenerateRefreshToken()
+        {
+            return Guid.NewGuid().ToString("N")
+                 + Guid.NewGuid().ToString("N");
         }
     }
 }
