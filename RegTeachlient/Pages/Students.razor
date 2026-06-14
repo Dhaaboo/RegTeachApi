@@ -1,0 +1,50 @@
+﻿@page "/students"
+@inject HttpClient Http
+
+<h3>Students</h3>
+
+@if (students == null)
+{
+    <p>Loading...</p>
+}
+else
+{
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Id</th>
+                <th>Name</th>
+                <th>Email</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var s in students)
+            {
+                <tr>
+                    <td>@s.Id</td>
+                    <td>@s.Name</td>
+                    <td>@s.Email</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+
+@code {
+    List<Student>? students;
+
+    protected override async Task OnInitializedAsync()
+    {
+        students = await Http.GetFromJsonAsync<List<Student>>
+        (
+            "/api/Students"
+        );
+    }
+
+    public class Student
+    {
+        public int Id { get; set; }
+        public string Name { get; set; } = "";
+        public string Email { get; set; } = "";
+    }
+}

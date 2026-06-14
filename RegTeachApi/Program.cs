@@ -104,7 +104,7 @@ _Src.AddAuthorization(options =>
 _Src.AddCors(options =>
 {
     options.AddPolicy(
-        "AllowFrontend",
+        "RegTeachlient",
         policy =>
         {
             policy
@@ -116,27 +116,27 @@ _Src.AddCors(options =>
 
 var app = _blder.Build();
 
-using var scope = app.Services.CreateScope();
+//using var scope = app.Services.CreateScope();
 
-var _db = scope.ServiceProvider.GetRequiredService<APPDBC>();
+//var _db = scope.ServiceProvider.GetRequiredService<APPDBC>();
 
-if (!_db.RegTeachUsers.Any())
-{
-    _db.RegTeachUsers.Add(new RegTeachUsers
-    {
-        Username = "admin",
-        Email = "admin@admin.com",
-        FirstName = "System",
-        LastName = "Admin",
-        Password = BCrypt.Net.BCrypt.HashPassword("Admin@123"),
-        Role = "Admin",
-        IsEmailVerified = true
-    });
-    _db.SaveChanges();
-}
+//if (!_db.RegTeachUsers.Any())
+//{
+//    _db.RegTeachUsers.Add(new RegTeachUsers
+//    {
+//        Username = "admin",
+//        Email = "admin@admin.com",
+//        FirstName = "System",
+//        LastName = "Admin",
+//        Password = BCrypt.Net.BCrypt.HashPassword("Admin@123"),
+//        Role = "Admin",
+//        IsEmailVerified = true
+//    });
+//    _db.SaveChanges();
+//}
 
 app.UseMiddleware<SecurityHeadersMiddleware>();
-app.UseCors("AllowFrontend");
+app.UseCors("RegTeachlient");
 
 
 // Configure the HTTP request pipeline.
@@ -145,6 +145,7 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI();
     app.MapOpenApi();
+    app.UseCors("RegTeachlient");
 }
 
 app.UseHttpsRedirection();
